@@ -37,6 +37,7 @@ import {
 import { Input } from '@/components/ui/input.tsx'
 import { Textarea } from '@/components/ui/textarea.tsx'
 import { noteStyles, noteFormats, videoPlatforms } from '@/constant/note.ts'
+import { log } from 'node:console'
 
 /* -------------------- 校验 Schema -------------------- */
 const formSchema = z
@@ -338,6 +339,36 @@ const NoteForm = () => {
                         拖拽文件到这里上传 <br />
                         <span className="text-xs text-gray-400">或点击选择文件</span>
                       </p>
+                    </div>
+                    {/* 上传按钮 */}
+                    <div className="mt-4 text-center">
+                      <button
+                        type="button"
+                        className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                        onClick={async () => {
+                          try {
+                            const res = await fetch("/api/upload-qiniu", {
+                              method: "POST"
+                            })
+                            const json = await res.json()
+                            console.log(json);
+                            
+                            if (json.uploaded && json.uploaded.length > 0) {
+                              alert(`✅ 上传成功：共 ${json.uploaded.length} 个文件`)
+                              console.log("上传结果：", json.uploaded)
+                              // 如果你想把其中某个 url 设置到表单字段：
+                              // field.onChange(json.uploaded[0].url)
+                            } else {
+                              alert("⚠️ 没有成功上传的文件")
+                            }
+                          } catch (err) {
+                            console.error("上传失败", err)
+                            alert("❌ 上传失败")
+                          }
+                        }}
+                      >
+                        批量上传至七牛云
+                      </button>
                     </div>
                   </>
                 )}
