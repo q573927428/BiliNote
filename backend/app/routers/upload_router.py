@@ -39,7 +39,7 @@ def upload_files_to_qiniu():
     # 上传视频到 shipin 目录
     for file_path in video_files:
         filename = os.path.basename(file_path)
-        key = f"shipin/{filename}"
+        key = f"shipin/video/{filename}"
         if upload_to_qiniu(file_path, key):
             uploaded.append(key)
             os.remove(file_path)
